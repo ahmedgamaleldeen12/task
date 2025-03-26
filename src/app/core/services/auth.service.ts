@@ -10,10 +10,10 @@ export class AuthService {
   });
   constructor() {
     //Keep session persistence
-    const storedAuth = localStorage.getItem('isLoggedIn') === 'true';
-    if (storedAuth) {
-      patchState(this._state, { is_auth: true });
-    }
+    // const storedAuth = localStorage.getItem('isLoggedIn') === 'true';
+    // if (storedAuth) {
+    //   patchState(this._state, { is_auth: true });
+    // }
   }
 
   // This approach will reset authentication state on a full page reload because it's purely stored in memory.
