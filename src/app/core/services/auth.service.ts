@@ -1,31 +1,35 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { signalState, patchState } from '@ngrx/signals';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private _state = signal<AuthState>({
+  private _state = signalState<AuthState>({
     is_auth: false,
   });
-  isAuth = computed(() => this._state().is_auth);
   constructor() {
-    // Keep session persistence
-    // const storedAuth = localStorage.getItem('isLoggedIn') === 'true';
-    // if (storedAuth) {
-    //   this._state.set({ is_auth: true });
-    // }
+    //Keep session persistence
+    const storedAuth = localStorage.getItem('isLoggedIn') === 'true';
+    if (storedAuth) {
+      patchState(this._state, { is_auth: true });
+    }
   }
 
   // This approach will reset authentication state on a full page reload because it's purely stored in memory.
-  login() {
-    this._state.set({ is_auth: true });
+  login(): void {
+    patchState(this._state, { is_auth: true });
   }
-    // This approach will reset not authentication state on a full page reload.
+
+  // This approach will reset not authentication state on a full page reload.
 
   // login() {
-  //   this._state.set({ is_auth: true });
+  //   patchState(this._state, { is_auth: true });
   //   localStorage.setItem('isLoggedIn', 'true');
   // }
+  isAuth(): boolean {
+    return this._state.is_auth();
+  }
 }
 
 export type AuthState = {
