@@ -26,13 +26,13 @@ export class LoginComponent implements OnInit {
   }
   initForm() {
     this.loginForm = this.fb.group({
-      email: new FormControl('', [Validators.required]),
+      username: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
     });
   }
-  onSubmit() {
-    const { email, password } = this.loginForm.value;
-    if (email === 'admin' && password === 'admin') {
+  onSubmit() {    
+    const { username, password } = this.loginForm.value;
+    if (username === 'admin' && password === 'admin') {
       localStorage.setItem('isLoggedIn', 'true');
       this.router.navigate(['/products']);
     } else {
