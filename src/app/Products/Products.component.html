@@ -1,7 +1,130 @@
-<app-table-grid [columns]="Columns" [data]="products.items" (onEdit)="edit($event)" (onDelete)="deleteProduct($event)"></app-table-grid>
-<app-custom-paginator [totalItems]="products.totalCount" (pageIndexChanged)="onPageChange($event)"></app-custom-paginator>
+<app-table-grid
+  [columns]="columns"
+  [data]="products.items"
+  (onEdit)="openEditModal($event)"
+  (onDelete)="openDeleteModal($event)"
+></app-table-grid>
 
-<button (click)="open()">1111111111</button>
+<app-custom-paginator
+  [totalItems]="products.totalCount"
+  (pageIndexChanged)="onPageChange($event)"
+></app-custom-paginator>
 
+<app-ui-modal [(isModalOpen)]="editModalFlag">
+  <h3 modal-title class="text-lg font-semibold text-gray-900 text-center">
+    Edit Product
+  </h3>
 
-<app-ui-modal [isModalOpen]="x"></app-ui-modal>
+  <div modal-body class="text-sm text-gray-500 mt-1">
+    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+      <form class="space-y-6" [formGroup]="editForm">
+        <div>
+          <label for="name" class="block text-sm/6 font-medium text-gray-900"
+            >Name:</label
+          >
+          <div class="mt-2">
+            <input
+              type="text"
+              name="name"
+              id="name"
+              formControlName="name"
+              required
+              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+            />
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between">
+            <label
+              for="Category"
+              class="block text-sm/6 font-medium text-gray-900"
+              >Category</label
+            >
+          </div>
+          <div class="mt-2">
+            <input
+              type="text"
+              name="Category"
+              formControlName="category"
+              id="Category"
+              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+            />
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between">
+            <label for="Price" class="block text-sm/6 font-medium text-gray-900"
+              >Price</label
+            >
+          </div>
+          <div class="mt-2">
+            <input
+              type="number"
+              name="Price"
+              formControlName="price"
+              id="Price"
+              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+            />
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between">
+            <label for="Stock" class="block text-sm/6 font-medium text-gray-900"
+              >Stock</label
+            >
+          </div>
+          <div class="mt-2">
+            <input
+              type="number"
+              name="Stock"
+              formControlName="stock"
+              id="Stock"
+              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+            />
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div modal-footer>
+    <button
+      (click)="confirmEdit()"
+      [disabled]="!editForm.valid"
+      class="bg-indigo-600 text-white rounded hover:bg-indigo-500 px-4 py-2 disabled:bg-gray-300 disabled:cursor-not-allowed"
+    >
+      Edit
+    </button>
+    <button
+      (click)="editModalFlag = false"
+      class="bg-white text-gray-900 px-4 py-2 rounded hover:bg-gray-100 sm:mt-0"
+    >
+      Cancel
+    </button>
+  </div>
+</app-ui-modal>
+
+<app-ui-modal [(isModalOpen)]="deleteModalFlag">
+  <h3 modal-title class="text-lg font-semibold text-gray-900 text-center">
+    Delete Product
+  </h3>
+
+  <p modal-body class="text-sm text-gray-500 mt-2">
+    Are you sure you want to delete this product? This action cannot be undone.
+  </p>
+
+  <div modal-footer>
+    <button
+      (click)="confirmDelete()"
+      class="bg-rose-600 text-white rounded hover:bg-rose-500 px-4 py-2"
+    >
+      Delete
+    </button>
+    <button
+      (click)="deleteModalFlag = false"
+      class="bg-white text-gray-900 px-4 py-2 rounded hover:bg-gray-100 sm:mt-0"
+    >
+      Cancel
+    </button>
+  </div>
+</app-ui-modal>

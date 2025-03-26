@@ -4,16 +4,28 @@ import { PagedProducts, Product } from './models/model';
 import { TableGridComponent } from '../shared/table-grid/table-grid.component';
 import { ProductsService } from './services/Products.service';
 import { ActivatedRoute } from '@angular/router';
-import { UiModalComponent } from "../shared/ui-modal/ui-modal.component";
+import { UiModalComponent } from '../shared/ui-modal/ui-modal.component';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-Products',
   templateUrl: './Products.component.html',
   styleUrls: ['./Products.component.css'],
-  imports: [CustomPaginatorComponent, TableGridComponent, UiModalComponent],
+  imports: [
+    CustomPaginatorComponent,
+    TableGridComponent,
+    UiModalComponent,
+    ReactiveFormsModule,
+  ],
 })
 export class ProductsComponent implements OnInit {
-  Columns: { key: keyof Product; label: string }[] = [
+  readonly  columns: { key: keyof Product; label: string }[] = [
     { key: 'id', label: 'Product ID' },
     { key: 'name', label: 'Name' },
     { key: 'category', label: 'Category' },
@@ -22,7 +34,13 @@ export class ProductsComponent implements OnInit {
     { key: 'photo', label: 'Photo' },
   ];
   products: PagedProducts = { items: [], totalCount: 0 };
-  
+
+  editModalFlag: boolean = false;
+  deleteModalFlag: boolean = false;
+  selectedProductId: number | null = null;
+  editForm!: FormGroup;
+
+  private readonly fb = inject(FormBuilder);
   private readonly _productsService = inject(ProductsService);
   private readonly route = inject(ActivatedRoute);
 
@@ -30,25 +48,54 @@ export class ProductsComponent implements OnInit {
 
   ngOnInit() {
     this.products = this.route.snapshot.data['productsData'];
+    this.initForm();
   }
   getProducts(skipCount: number = 0) {
     this._productsService.getPagedProducts(skipCount).subscribe((data) => {
-      this.products = data
-      
+      this.products = data;
     });
   }
   onPageChange(skipCount: number) {
     this.getProducts(skipCount);
   }
-  deleteProduct(id : number){
-    console.log(id)
+  openEditModal(item: Product) {
+    this.editForm.patchValue({
+      id: item.id,
+      name: item.name,
+      category: item.category,
+      price: item.price,
+      stock: item.stock,
+    });
+    this.editModalFlag = true;
   }
-  edit(item : Product){
-    console.log(item)
+  confirmEdit() {
+    const updatedProduct: Product = this.editForm.value;
+    this._productsService.editProduct(updatedProduct.id, updatedProduct);
+    this.getProducts();
+    this.editModalFlag = false;
   }
 
-  x:boolean = false
-  open(){
-      this.x =true;
+  openDeleteModal(id: number) {
+    this.selectedProductId = id;
+    this.deleteModalFlag = true;
+  }
+
+  confirmDelete() {
+    if (this.selectedProductId !== null) {
+      this._productsService.deleteProduct(this.selectedProductId);
+      this.getProducts();
+      this.deleteModalFlag = false;
+      this.selectedProductId = null;
+    }
+  }
+
+  initForm() {
+    this.editForm = this.fb.group({
+      id: new FormControl(null),
+      name: new FormControl('', [Validators.required]),
+      category: new FormControl('', [Validators.required]),
+      price: new FormControl(0, [Validators.required, Validators.min(1)]),
+      stock: new FormControl(0, [Validators.required, Validators.min(1)]),
+    });
   }
 }
