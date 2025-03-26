@@ -1,0 +1,7 @@
+<app-table-grid [columns]="Columns" [data]="products.items" (onEdit)="edit($event)" (onDelete)="deleteProduct($event)"></app-table-grid>
+<app-custom-paginator [totalItems]="products.totalCount" (pageIndexChanged)="onPageChange($event)"></app-custom-paginator>
+
+<button (click)="open()">1111111111</button>
+
+
+<app-ui-modal [isModalOpen]="x"></app-ui-modal>

@@ -1,0 +1,19 @@
+{
+  "products": [
+    { "id": 1, "name": "Laptop Pro", "category": "Electronics", "price": 1299.99, "stock": 50, "photo": "https://picsum.photos/200" },
+    { "id": 2, "name": "Wireless Mouse", "category": "Accessories", "price": 29.99, "stock": 100, "photo": "https://picsum.photos/201" },
+    { "id": 3, "name": "Gaming Monitor", "category": "Electronics", "price": 499.99, "stock": 30, "photo": "https://picsum.photos/202" },
+    { "id": 4, "name": "Mechanical Keyboard", "category": "Accessories", "price": 89.99, "stock": 75, "photo": "https://picsum.photos/203" },
+    { "id": 5, "name": "Smartphone X", "category": "Electronics", "price": 999.99, "stock": 40, "photo": "https://picsum.photos/204" },
+    { "id": 6, "name": "Wireless Earbuds", "category": "Accessories", "price": 149.99, "stock": 120, "photo": "https://picsum.photos/205" },
+    { "id": 7, "name": "Smartwatch", "category": "Wearables", "price": 249.99, "stock": 60, "photo": "https://picsum.photos/206" },
+    { "id": 8, "name": "Tablet 10\"", "category": "Electronics", "price": 399.99, "stock": 45, "photo": "https://picsum.photos/207" },
+    { "id": 9, "name": "Portable Speaker", "category": "Audio", "price": 79.99, "stock": 85, "photo": "https://picsum.photos/208" },
+    { "id": 10, "name": "External Hard Drive", "category": "Storage", "price": 129.99, "stock": 90, "photo": "https://picsum.photos/209" },
+    { "id": 11, "name": "Gaming Chair", "category": "Furniture", "price": 199.99, "stock": 25, "photo": "https://picsum.photos/210" },
+    { "id": 12, "name": "4K TV", "category": "Electronics", "price": 1499.99, "stock": 20, "photo": "https://picsum.photos/211" },
+    { "id": 13, "name": "VR Headset", "category": "Gaming", "price": 349.99, "stock": 35, "photo": "https://picsum.photos/212" },
+    { "id": 14, "name": "USB-C Hub", "category": "Accessories", "price": 49.99, "stock": 150, "photo": "https://picsum.photos/213" },
+    { "id": 15, "name": "Bluetooth Keyboard", "category": "Accessories", "price": 59.99, "stock": 80, "photo": "https://picsum.photos/214" }
+  ]
+}
