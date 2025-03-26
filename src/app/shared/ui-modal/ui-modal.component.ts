@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, input, Input, output, Output } from '@angular/core';
 
 @Component({
   selector: 'app-ui-modal',
@@ -8,10 +8,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 })
 export class UiModalComponent {
-  @Input({ required: true }) isModalOpen: boolean = false;
-  @Output() isModalOpenChange = new EventEmitter<boolean>(); // Notify parent
+  isModalOpen = input<boolean>(false);
+  isModalOpenChange = output<boolean>();
 
   closeModal() {
-    this.isModalOpenChange.emit(false); // Emit event when modal is closed
+    this.isModalOpenChange.emit(false);
   }
 }

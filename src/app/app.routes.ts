@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { ProductsComponent } from './Products/Products.component';
-import { authGuard } from './core/guards/auth.guard'; 
+import { authGuard } from './core/guards/auth.guard';
 import { ProductsResolver } from './core/resolvers/products.resolver';
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Product, PagedProducts } from '../models/model';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -41,13 +41,19 @@ export class ProductsService {
   }
 
   deleteProduct(productId: number): void {
-    const updatedProducts = this.products$.getValue().filter((product) => product.id !== productId);
+    const updatedProducts = this.products$
+      .getValue()
+      .filter((product) => product.id !== productId);
     this.products$.next(updatedProducts);
   }
 
   editProduct(productId: number, updatedProduct: Product): void {
     // { ...product, ...updatedProduct } let me replace all properties of original product with the updated one
-    const updatedProducts = this.products$.getValue().map((product) =>product.id === productId ? { ...product, ...updatedProduct } : product);
+    const updatedProducts = this.products$
+      .getValue()
+      .map((product) =>
+        product.id === productId ? { ...product, ...updatedProduct } : product
+      );
     this.products$.next(updatedProducts);
   }
 }

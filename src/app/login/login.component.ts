@@ -1,42 +1,35 @@
-import { Component, inject, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, OnInit, signal, computed, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  imports: [ReactiveFormsModule],
   styleUrls: ['./login.component.css'],
+  imports: [FormsModule],
 })
 export class LoginComponent implements OnInit {
-  loginForm!: FormGroup;
-  private readonly fb = inject(FormBuilder);
+  public username = signal('');
+  public password = signal('');
+
   private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
 
   constructor() {}
 
-  ngOnInit() {
-    this.initForm();
-  }
-  initForm() {
-    this.loginForm = this.fb.group({
-      username: new FormControl('', [Validators.required]),
-      password: new FormControl('', [Validators.required]),
-    });
-  }
-  onSubmit() {    
-    const { username, password } = this.loginForm.value;
-    if (username === 'admin' && password === 'admin') {
-      localStorage.setItem('isLoggedIn', 'true');
+  ngOnInit() {}
+
+  onSubmit() {
+    if (this.username() === 'admin' && this.password() === 'admin') {
+      this.authService.login();
       this.router.navigate(['/products']);
     } else {
       alert('Invalid email or password');
     }
   }
+
+  public isFormValid = computed(() => {
+    return this.username().length > 0 && this.password().length > 0;
+  });
 }

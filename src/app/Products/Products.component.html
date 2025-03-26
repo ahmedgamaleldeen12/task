@@ -1,12 +1,12 @@
 <app-table-grid
-  [columns]="columns"
-  [data]="products.items"
+  [columns]="columns()"
+  [data]="products().items"
   (onEdit)="openEditModal($event)"
   (onDelete)="openDeleteModal($event)"
 ></app-table-grid>
 
 <app-custom-paginator
-  [totalItems]="products.totalCount"
+  [totalItems]="products().totalCount"
   (pageIndexChanged)="onPageChange($event)"
 ></app-custom-paginator>
 
@@ -96,7 +96,7 @@
       Edit
     </button>
     <button
-      (click)="editModalFlag = false"
+      (click)="editModalFlag.set(false)"
       class="bg-white text-gray-900 px-4 py-2 rounded hover:bg-gray-100 sm:mt-0"
     >
       Cancel
@@ -121,7 +121,7 @@
       Delete
     </button>
     <button
-      (click)="deleteModalFlag = false"
+      (click)="deleteModalFlag.set(false)"
       class="bg-white text-gray-900 px-4 py-2 rounded hover:bg-gray-100 sm:mt-0"
     >
       Cancel

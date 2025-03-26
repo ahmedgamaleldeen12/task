@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, computed, input, output, signal } from '@angular/core';
 
 @Component({
   selector: 'app-table-grid',
@@ -6,32 +6,34 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   templateUrl: './table-grid.component.html',
   styleUrl: './table-grid.component.css',
 })
+// extends { id: number } to make sure that every type has an id so we can track for loop effectively
 export class TableGridComponent<T extends { id: number }> {
-  @Input() data: T[] = [];
-  @Input() columns: { key: keyof T; label: string }[] = [];
-  @Output() onEdit = new EventEmitter<T>();
-  @Output() onDelete = new EventEmitter<number>();
+  data = input<T[]>([]);
+  columns = input<{ key: keyof T; label: string }[]>([]);
 
-  sortColumn: keyof T | '' = '';
-  sortDirection: 'asc' | 'desc' = 'asc';
+  onEdit = output<T>();
+  onDelete = output<number>();
 
-  sort(column: keyof T) {
-    this.sortDirection =
-      this.sortColumn === column && this.sortDirection === 'asc'
-        ? 'desc'
-        : 'asc';
-    this.sortColumn = column;
+  private sortColumn = signal<keyof T | ''>('');
+  private sortDirection = signal<'asc' | 'desc'>('asc');
 
-    this.data.sort((a, b) =>
-      this.sortDirection === 'asc'
-        ? a[column] > b[column]
-          ? 1
-          : -1
-        : a[column] < b[column]
-        ? 1
-        : -1
+
+  sortedData = computed(() => {
+    const column = this.sortColumn();
+    if (!column) return this.data();
+
+    const direction = this.sortDirection();
+    return [...this.data()].sort((a, b) =>
+      direction === 'asc' ? (a[column] > b[column] ? 1 : -1) : (a[column] < b[column] ? 1 : -1)
     );
+  });
+  sort(column: keyof T) {
+    this.sortDirection.set(
+      this.sortColumn() === column && this.sortDirection() === 'asc' ? 'desc' : 'asc'
+    );
+    this.sortColumn.set(column);
   }
+
 
   emitEdit(item: T) {
     this.onEdit.emit(item);

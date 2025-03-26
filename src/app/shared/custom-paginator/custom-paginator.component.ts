@@ -1,38 +1,48 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 
 @Component({
   selector: 'app-custom-paginator',
   templateUrl: './custom-paginator.component.html',
   styleUrl: './custom-paginator.component.css',
 })
-export class CustomPaginatorComponent implements OnChanges {
-  @Input({ required: true }) totalItems: number = 0;
-  @Input() itemsPerPage: number = 5;
-  @Output() pageIndexChanged = new EventEmitter<number>();
+export class CustomPaginatorComponent {
+  totalItems = input<number>(0);
+  itemsPerPage = input<number>(5);
 
-  currentPage: number = 1;
-  totalPages: number = 0;
-  pages: number[] = [];
+  pageIndexChanged = output<number>();
 
-  constructor() {}
+  currentPage = signal(1);
 
-  ngOnChanges(): void {
-    this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
-    this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
-    if (this.currentPage > this.totalPages) {
-      this.currentPage = Math.max(this.totalPages, 1);
+  totalPages = computed(
+    () => Math.ceil(this.totalItems() / this.itemsPerPage()) || 1
+  );
+  pages = computed(() =>
+    Array.from({ length: this.totalPages() }, (_, i) => i + 1)
+  );
+
+  constructor() {
+    effect(() => {
+      if (this.currentPage() > this.totalPages()) {
+        this.currentPage.set(Math.max(this.totalPages(), 1));
+      }
       this.emitPageIndex();
-    }
+    });
   }
 
   onPageChange(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage = page;
-      this.emitPageIndex();
+    if (page >= 1 && page <= this.totalPages()) {
+      this.currentPage.set(page);
     }
   }
 
   private emitPageIndex(): void {
-    this.pageIndexChanged.emit((this.currentPage - 1) * this.itemsPerPage);
+    this.pageIndexChanged.emit((this.currentPage() - 1) * this.itemsPerPage());
   }
 }

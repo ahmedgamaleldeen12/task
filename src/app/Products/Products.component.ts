@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CustomPaginatorComponent } from '../shared/custom-paginator/custom-paginator.component';
 import { PagedProducts, Product } from './models/model';
 import { TableGridComponent } from '../shared/table-grid/table-grid.component';
@@ -25,19 +25,19 @@ import {
   ],
 })
 export class ProductsComponent implements OnInit {
-  readonly  columns: { key: keyof Product; label: string }[] = [
+  readonly columns = signal<{ key: keyof Product; label: string }[]>([
     { key: 'id', label: 'Product ID' },
     { key: 'name', label: 'Name' },
     { key: 'category', label: 'Category' },
     { key: 'price', label: 'Price' },
     { key: 'stock', label: 'Stock' },
     { key: 'photo', label: 'Photo' },
-  ];
-  products: PagedProducts = { items: [], totalCount: 0 };
+  ]);
+  products = signal<PagedProducts>({ items: [], totalCount: 0 });
 
-  editModalFlag: boolean = false;
-  deleteModalFlag: boolean = false;
-  selectedProductId: number | null = null;
+  editModalFlag = signal<boolean>(false);
+  deleteModalFlag = signal<boolean>(false);
+  selectedProductId = signal<number>(0);
   editForm!: FormGroup;
 
   private readonly fb = inject(FormBuilder);
@@ -47,12 +47,12 @@ export class ProductsComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    this.products = this.route.snapshot.data['productsData'];
+    this.products.set(this.route.snapshot.data['productsData']);
     this.initForm();
   }
   getProducts(skipCount: number = 0) {
     this._productsService.getPagedProducts(skipCount).subscribe((data) => {
-      this.products = data;
+      this.products.set(data);
     });
   }
   onPageChange(skipCount: number) {
@@ -66,26 +66,26 @@ export class ProductsComponent implements OnInit {
       price: item.price,
       stock: item.stock,
     });
-    this.editModalFlag = true;
+    this.editModalFlag.set(true);
   }
   confirmEdit() {
     const updatedProduct: Product = this.editForm.value;
     this._productsService.editProduct(updatedProduct.id, updatedProduct);
     this.getProducts();
-    this.editModalFlag = false;
+    this.editModalFlag.set(false);
   }
 
   openDeleteModal(id: number) {
-    this.selectedProductId = id;
-    this.deleteModalFlag = true;
+    this.selectedProductId.set(id);
+    this.deleteModalFlag.set(true);
   }
 
   confirmDelete() {
-    if (this.selectedProductId !== null) {
-      this._productsService.deleteProduct(this.selectedProductId);
+    if (this.selectedProductId() !== 0) {
+      this._productsService.deleteProduct(this.selectedProductId());
       this.getProducts();
-      this.deleteModalFlag = false;
-      this.selectedProductId = null;
+      this.deleteModalFlag.set(false);
+      this.selectedProductId.set(0);
     }
   }
 
