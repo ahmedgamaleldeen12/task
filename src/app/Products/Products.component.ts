@@ -12,6 +12,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { ProductsStore } from './Products.store';
 
 @Component({
   selector: 'app-Products',
@@ -44,16 +45,19 @@ export class ProductsComponent implements OnInit {
   private readonly _productsService = inject(ProductsService);
   private readonly route = inject(ActivatedRoute);
 
+  readonly store = inject(ProductsStore);
+
   constructor() {}
 
   ngOnInit() {
-    this.products.set(this.route.snapshot.data['productsData']);
+    this.getProducts();
+    // this.products.set(this.route.snapshot.data['productsData']);
     this.initForm();
   }
   getProducts(skipCount: number = 0) {
-    this._productsService.getPagedProducts(skipCount).subscribe((data) => {
-      this.products.set(data);
-    });
+    // console.log(this._productsService.getPagedProducts(0));
+    this.products.set(this._productsService.getPagedProducts(skipCount)())
+    console.log(this.products())
   }
   onPageChange(skipCount: number) {
     this.getProducts(skipCount);
